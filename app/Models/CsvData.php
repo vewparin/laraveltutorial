@@ -9,12 +9,11 @@ class CsvData extends Model
 {
     use HasFactory;
 
-    protected $table = 'csv_data'; // ชื่อตารางในฐานข้อมูล
+    protected $table = 'csv_data';
 
     protected $fillable = [
         'column1',
         'column2',
         'column3',
-        // เพิ่มคอลัมน์อื่น ๆ ที่จำเป็น
     ];
 }
