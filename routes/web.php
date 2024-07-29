@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CsvUploadController;
-
+use App\Http\Controllers\AnalysisController;
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
@@ -16,3 +16,6 @@ Route::post('/delete-all', [CsvUploadController::class, 'deleteAllFiles'])->name
 
 Route::post('/analyze-comments', [CsvUploadController::class, 'analyzeComments'])->name('comments.analyze');
 Route::get('/analysis-results', [CsvUploadController::class, 'showAnalysisResults'])->name('comments.analysis.results');
+
+Route::post('/save-analysis-results', [AnalysisController::class, 'saveResults'])->name('save.analysis.results');
+
