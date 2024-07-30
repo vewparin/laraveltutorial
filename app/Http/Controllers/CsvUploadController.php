@@ -9,6 +9,7 @@ use App\Models\CsvUpload;
 use App\Models\CsvData;
 use League\Csv\Reader;
 use GuzzleHttp\Client;
+use App\Models\AnalysisResult;
 
 class CsvUploadController extends Controller
 {
@@ -63,6 +64,14 @@ class CsvUploadController extends Controller
         CsvUpload::truncate();
 
         return back()->with('success', 'All data deleted successfully');
+    }
+
+    public function deleteAllResults()
+    {
+        // สมมติว่าชื่อโมเดลของคุณคือ AnalysisResult
+        AnalysisResult::truncate();
+    
+        return redirect()->back()->with('results', 'All results have been deleted successfully.');
     }
 
     public function analyzeComments(Request $request)

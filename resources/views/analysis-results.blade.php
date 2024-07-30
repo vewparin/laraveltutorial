@@ -31,7 +31,7 @@
         </div>
         @endif
 
-        @if (!empty($results))
+        @if (is_array($results) && !empty($results))
         <div class="table-wrapper">
             <table class="table table-striped table-bordered">
                 <thead>
@@ -60,6 +60,12 @@
         <div id="save-container" class="mt-3">
             <button id="save-button" class="btn btn-success">Save to Database</button>
         </div>
+        <a href="{{ route('dashboard') }}" class="btn btn-primary mt-3">Go to Dashboard</a>
+
+        <form id="delete-all-form" action="{{ url('delete-all-results') }}" method="POST" class="mt-3">
+            @csrf
+            <button type="submit" class="btn btn-danger">Delete All Results</button>
+        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
