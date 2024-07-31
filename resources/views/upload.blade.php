@@ -20,9 +20,11 @@
             background-color: #fff;
             z-index: 2;
         }
-         .nav-masthead .nav-link {
+
+        .nav-masthead .nav-link {
             font-weight: 700;
-            color: black; /* เปลี่ยนสีฟอนต์เป็นสีดำ */
+            color: black;
+            /* เปลี่ยนสีฟอนต์เป็นสีดำ */
             background-color: transparent;
             border-bottom: .25rem solid transparent;
         }
@@ -31,14 +33,15 @@
         .nav-masthead .nav-link:focus {
             border-bottom-color: rgba(255, 255, 255, .25);
         }
-        .nav-link:hover{
-            background-color:burlywood;
-        }
-        .nav-masthead .active {
-            color:black;
-            border-bottom-color:aqua;
+
+        .nav-link:hover {
+            background-color: burlywood;
         }
 
+        .nav-masthead .active {
+            color: black;
+            border-bottom-color: aqua;
+        }
     </style>
 </head>
 
@@ -50,6 +53,14 @@
                 <nav class="nav nav-masthead justify-content-center float-md-end">
                     <a class="nav-link " aria-current="page" href="{{ route('welcome') }}">Home</a>
                     <a class="nav-link active" href="{{ route('csv.upload.form') }}">Upload</a>
+                    <a class="nav-link " href="{{ route('comments.analysis.results') }}">Result</a>
+
+                    @guest
+                    <a href="{{ route('google-auth') }}" class="btn btn-primary">Login with Google</a>
+                    @else
+                    <span class="nav-link text-primary bg-white rounded-pill"> your name : {{ Auth::user()->name }}</span>
+                    <a class="nav-link bg-danger text-white rounded-pill" href="{{ route('logout') }}">Logout</a>
+                    @endguest
                 </nav>
             </div>
         </header>

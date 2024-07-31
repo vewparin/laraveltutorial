@@ -18,11 +18,51 @@
             background-color: #fff;
             z-index: 2;
         }
+
+        .nav-masthead .nav-link {
+            font-weight: 700;
+            color: rgba(255, 255, 255, .5);
+            background-color: transparent;
+            border-bottom: .25rem solid transparent;
+        }
+
+        .nav-masthead .nav-link:hover,
+        .nav-masthead .nav-link:focus {
+            border-bottom-color: rgba(255, 255, 255, .25);
+        }
+
+        .nav-masthead .nav-link+.nav-link {
+            margin-left: 1rem;
+        }
+
+        .nav-masthead .active {
+            color:darkblue;
+            border-bottom-color:aqua;
+        }
     </style>
 </head>
 
 <body>
     <div class="container mt-5">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column ">
+            <header class="mb-auto">
+                <div>
+                    <h3 class="float-md-start mb-0">Semantic Analyze</h3>
+                    <nav class="nav nav-masthead justify-content-center float-md-end ">
+                        <a class="nav-link text-dark " aria-current="page" href="{{ route('welcome') }}">Home</a>
+                        <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">Upload</a>
+                        <a class="nav-link active" href="{{ route('comments.analysis.results') }}">Result</a>
+
+                        @guest
+                        <a href="{{ route('google-auth') }}" class="btn btn-primary">Login with Google</a>
+                        @else
+                        <span class="nav-link text-primary bg-white rounded-pill"> your name : {{ Auth::user()->name }}</span>
+                        <a class="nav-link bg-danger text-white rounded-pill" href="{{ route('logout') }}">Logout</a>
+                        @endguest
+                    </nav>
+                </div>
+            </header>
+        </div>
         <h1 class="mb-4">Analysis Results</h1>
 
         @if (session('results'))
