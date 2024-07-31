@@ -13,7 +13,7 @@ use App\Models\AnalysisResult;
 
 class CsvUploadController extends Controller
 {
-    
+
     public function showUploadForm()
     {
         $uploads = CsvUpload::all();
@@ -71,33 +71,73 @@ class CsvUploadController extends Controller
     {
         // สมมติว่าชื่อโมเดลของคุณคือ AnalysisResult
         AnalysisResult::truncate();
-    
+
         return redirect()->back()->with('results', 'All results have been deleted successfully.');
     }
 
+    // public function analyzeComments(Request $request)
+    // {
+    //     ini_set('max_execution_time', 600); // เพิ่มเวลาประมวลผลสูงสุดเป็น 600 วินาที (10 นาที)
+
+    //     $apiKey = env('AIFORTHAI_API_KEY');
+    //     $comments = CsvData::pluck('column2')->toArray();
+
+    //     $results = [];
+
+    //     foreach ($comments as $comment) {
+    //         $response = $this->getSentimentWithRetry($comment, $apiKey);
+    //         if ($response && is_array($response)) {
+    //             Log::info("Response for comment '$comment': " . json_encode($response));
+    //             $sentiment = isset($response['sentiment']) ? $response['sentiment'] : 'unknown';
+    //             $score = isset($sentiment['score']) ? $sentiment['score'] : 'unknown';
+    //             $polarity = isset($sentiment['polarity']) ? $sentiment['polarity'] : 'unknown';
+    //             if ($score == 0) { // Use == to allow type conversion
+    //                 $polarity = 'neutral';
+    //             }
+    //         } else {
+    //             Log::error("Failed to get valid response for comment: $comment. Response: " . print_r($response, true));
+    //             $score = 'unknown';
+    //             $polarity = 'unknown';
+    //         }
+    //         $results[] = [
+    //             'comment' => $comment,
+    //             'score' => $score,
+    //             'polarity' => $polarity,
+    //         ];
+    //     }
+
+    //     return redirect()->route('comments.analysis.results')->with('results', $results);
+    // }
     public function analyzeComments(Request $request)
     {
-        ini_set('max_execution_time', 600); // เพิ่มเวลาประมวลผลสูงสุดเป็น 600 วินาที (10 นาที)
+        set_time_limit(600); // เพิ่มเวลาประมวลผลสูงสุดเป็น 600 วินาที (10 นาที)
 
-        $apiKey = env('AIFORTHAI_API_KEY');
+        $apiKey = $request->get('api_key', env('AIFORTHAI_API_KEY'));
         $comments = CsvData::pluck('column2')->toArray();
 
         $results = [];
 
         foreach ($comments as $comment) {
-            $response = $this->getSentimentWithRetry($comment, $apiKey);
-            if ($response && is_array($response)) {
-                Log::info("Response for comment '$comment': " . json_encode($response));
-                $sentiment = isset($response['sentiment']) ? $response['sentiment'] : 'unknown';
-                $score = isset($sentiment['score']) ? $sentiment['score'] : 'unknown';
-                $polarity = isset($sentiment['polarity']) ? $sentiment['polarity'] : 'unknown';
-                if ($score == 0) { // Use == to allow type conversion
-                    $polarity = 'neutral';
-                }
+            // ตรวจสอบคำว่า "เร็ว" หรือ "ไว"
+            if (stripos($comment, 'เร็ว') !== false || stripos($comment, 'ไว') !== false) {
+                $polarity = 'negative'; // ตั้งเป็น negative ถ้ามีคำที่กำหนดอยู่ในความคิดเห็น
+                $score = 999; // คุณสามารถกำหนดค่าคะแนนตามที่ต้องการได้
             } else {
-                Log::error("Failed to get valid response for comment: $comment. Response: " . print_r($response, true));
-                $score = 'unknown';
-                $polarity = 'unknown';
+                // เรียก API สำหรับการวิเคราะห์ความรู้สึก
+                $response = $this->getSentimentWithRetry($comment, $apiKey);
+                if ($response && is_array($response)) {
+                    Log::info("Response for comment '$comment': " . json_encode($response));
+                    $sentiment = isset($response['sentiment']) ? $response['sentiment'] : 'unknown';
+                    $score = isset($sentiment['score']) ? $sentiment['score'] : 'unknown';
+                    $polarity = isset($sentiment['polarity']) ? $sentiment['polarity'] : 'unknown';
+                    if ($score == 0) {
+                        $polarity = 'neutral';
+                    }
+                } else {
+                    Log::error("Failed to get valid response for comment: $comment. Response: " . print_r($response, true));
+                    $score = 'unknown';
+                    $polarity = 'unknown';
+                }
             }
             $results[] = [
                 'comment' => $comment,
@@ -108,6 +148,7 @@ class CsvUploadController extends Controller
 
         return redirect()->route('comments.analysis.results')->with('results', $results);
     }
+
 
     private function getSentiment($comment, $apiKey)
     {

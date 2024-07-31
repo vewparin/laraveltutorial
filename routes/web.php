@@ -36,3 +36,6 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/save-analysis-results', [AnalysisController::class, 'saveResults'])->name('save.analysis.results');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// web.php
+Route::post('/download-csv', [AnalysisController::class, 'downloadCSV'])->name('download.csv');

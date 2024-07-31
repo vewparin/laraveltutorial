@@ -36,8 +36,8 @@
         }
 
         .nav-masthead .active {
-            color:darkblue;
-            border-bottom-color:aqua;
+            color: darkblue;
+            border-bottom-color: aqua;
         }
     </style>
 </head>
@@ -106,6 +106,8 @@
             @csrf
             <button type="submit" class="btn btn-danger">Delete All Results</button>
         </form>
+
+        <button id="download-csv-button" class="btn btn-info mt-3">Download as CSV</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -130,6 +132,26 @@
                 console.error('Error:', error);
                 alert('An error occurred while saving the results.');
             });
+        });
+
+        document.getElementById('download-csv-button').addEventListener('click', function () {
+            var results = @json($results);
+            var csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Comment,Score,Polarity\n"; // Add header
+
+            results.forEach(function(rowArray) {
+                let row = rowArray.comment + ',' + rowArray.score + ',' + rowArray.polarity;
+                csvContent += row + "\n";
+            });
+
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "analysis_results.csv");
+            document.body.appendChild(link); // Required for FF
+
+            link.click();
+            document.body.removeChild(link);
         });
     </script>
 </body>
