@@ -95,19 +95,25 @@
         @else
         <p>No analysis results to display.</p>
         @endif
-
-        <a href="{{ route('csv.upload.form') }}" class="btn btn-primary mt-3">Back to Upload</a>
-        <div id="save-container" class="mt-3">
-            <button id="save-button" class="btn btn-success">Save to Database</button>
+        <div class="d-flex p-2 justify-content-between">
+            <div>
+                <a href="{{ route('csv.upload.form') }}" class="btn btn-primary mt-3">Back to Upload</a>
+            </div>
+            <div id="save-container" class="mt-3">
+                <button id="save-button" class="btn btn-success">Save to Database</button>
+            </div>
+            <div>
+                <a href="{{ route('dashboard') }}" class="btn btn-primary mt-3">Go to Dashboard</a>
+            </div>
+            <form id="delete-all-form" action="{{ url('delete-all-results') }}" method="POST" class="mt-3">
+                @csrf
+                <button type="submit" class="btn btn-danger">Delete All Results</button>
+            </form>
+            <div>
+                <button id="download-csv-button" class="btn btn-info mt-3">Download as CSV</button>
+            </div>
         </div>
-        <a href="{{ route('dashboard') }}" class="btn btn-primary mt-3">Go to Dashboard</a>
 
-        <form id="delete-all-form" action="{{ url('delete-all-results') }}" method="POST" class="mt-3">
-            @csrf
-            <button type="submit" class="btn btn-danger">Delete All Results</button>
-        </form>
-
-        <button id="download-csv-button" class="btn btn-info mt-3">Download as CSV</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -134,7 +140,7 @@
             });
         });
 
-        document.getElementById('download-csv-button').addEventListener('click', function () {
+        document.getElementById('download-csv-button').addEventListener('click', function() {
             var results = @json($results);
             var csvContent = "data:text/csv;charset=utf-8,";
             csvContent += "Comment,Score,Polarity\n"; // Add header

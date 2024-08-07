@@ -54,7 +54,7 @@
                     <a class="nav-link " aria-current="page" href="{{ route('welcome') }}">Home</a>
                     <a class="nav-link active" href="{{ route('csv.upload.form') }}">Upload</a>
                     <a class="nav-link " href="{{ route('comments.analysis.results') }}">Result</a>
-
+                
                     @guest
                     <a href="{{ route('google-auth') }}" class="btn btn-primary">Login with Google</a>
                     @else
@@ -91,6 +91,7 @@
 
         <h2 class="mt-5">Uploaded Files</h2>
         <ul class="list-group">
+            
             @foreach($uploads as $upload)
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ $upload->file_name }}

@@ -30,8 +30,8 @@
         }
 
         .nav-masthead .active {
-            color: #fff;
-            border-bottom-color: #fff;
+            color:black;
+            border-bottom-color: darkblue;
         }
 
         main {
@@ -45,15 +45,15 @@
     </style>
 </head>
 
-<body class="d-flex h-100 text-center text-white bg-dark">
+<body class="d-flex h-100 text-center text-dark bg-white">
 
     <div class="cover-container d-flex w-500 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
             <div>
                 <h3 class="float-md-start mb-0">Semantic Analyze</h3>
-                <nav class="nav nav-masthead justify-content-center float-md-end">
+                <nav class="nav nav-masthead justify-content-center float-md-end ">
                     <a class="nav-link active" aria-current="page" href="{{ route('welcome') }}">Home</a>
-                    <a class="nav-link" href="{{ route('csv.upload.form') }}">Upload</a>
+                    <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">Upload</a>
                     @guest
                     <a href="{{ route('google-auth') }}" class="btn btn-primary">Login with Google</a>
                     @else
