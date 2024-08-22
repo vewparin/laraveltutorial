@@ -1,1 +1,6 @@
-โปรเจคนรก
+วันที่ 23/08/2567 
+Add Dashboard Compact in to Analysis-result page (Success)
+    File Edit 
+        analysis-result.blade.php
+        DashboardController.php
+        web.php (add route)

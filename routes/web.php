@@ -35,9 +35,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/save-analysis-results', [AnalysisController::class, 'saveResults'])->name('save.analysis.results');
+//อันเก่า
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // web.php
 Route::post('/download-csv', [AnalysisController::class, 'downloadCSV'])->name('download.csv');
 
+Route::get('/previous-results', [CsvUploadController::class, 'showPreviousResults'])->name('comments.previous.results');
 
+//อันใหม่
+Route::get('/dashboard-data', [DashboardController::class, 'getData'])->name('dashboard.data');

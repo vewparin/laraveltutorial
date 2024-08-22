@@ -198,4 +198,9 @@ class CsvUploadController extends Controller
 
         return view('analysis-results', compact('results'));
     }
+    public function showPreviousResults()
+    {
+        $results = AnalysisResult::all()->toArray();
+        return redirect()->route('comments.analysis.results')->with('results', $results);
+    }
 }
