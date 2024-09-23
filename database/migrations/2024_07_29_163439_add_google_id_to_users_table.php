@@ -8,20 +8,15 @@ class AddGoogleIdToUsersTable extends Migration
 {
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable(); // Make password nullable
+        Schema::table('users', function (Blueprint $table) {
             $table->string('google_id')->nullable();
-            $table->rememberToken();
-            $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('google_id');
+        });
     }
 }

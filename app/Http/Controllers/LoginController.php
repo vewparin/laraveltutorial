@@ -19,6 +19,10 @@ class LoginController extends Controller
             $google_user = Socialite::driver('google')->user();
             $user = User::where('google_id', $google_user->getId())->first();
 
+            // Clear the uploaded CSV data when a new user logs in
+            \App\Models\CsvData::truncate();
+            \App\Models\CsvUpload::truncate();
+
             if (!$user) {
                 $new_user = User::create([
                     'name' => $google_user->getName(),
@@ -33,6 +37,7 @@ class LoginController extends Controller
                 Auth::login($user);
                 return redirect()->route('welcome');
             }
+
         } catch (\Throwable $th) {
             dd('Something went wrong! ' . $th->getMessage());
         }
@@ -43,4 +48,5 @@ class LoginController extends Controller
         Auth::logout();
         return redirect()->route('welcome'); // Redirect to the welcome page or any other page
     }
+
 }

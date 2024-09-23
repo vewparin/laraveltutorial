@@ -13,5 +13,6 @@ class AnalysisResult extends Model
         'comment',
         'score',
         'polarity',
+        'processing_time',
     ];
 }

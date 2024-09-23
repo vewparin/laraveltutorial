@@ -45,3 +45,4 @@ Route::get('/previous-results', [CsvUploadController::class, 'showPreviousResult
 
 //อันใหม่
 Route::get('/dashboard-data', [DashboardController::class, 'getData'])->name('dashboard.data');
+

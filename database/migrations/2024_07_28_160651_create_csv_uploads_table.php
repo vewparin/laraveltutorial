@@ -17,6 +17,7 @@ class CreateCsvUploadsTable extends Migration
             $table->id();
             $table->string('file_name');
             $table->string('file_path');
+            $table->string('user_token')->nullable(); // เพิ่มคอลัมน์นี้สำหรับบ่งบอกถึงผู้ใช้ในการอัพโหลด
             $table->timestamps();
         });
     }

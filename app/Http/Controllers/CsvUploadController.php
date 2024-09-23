@@ -30,9 +30,13 @@ class CsvUploadController extends Controller
         $file = $request->file('csv_file');
         $filePath = $file->store('uploads');
 
+        // สร้าง user_token (ตัวอย่างเท่านั้น คุณอาจใช้วิธีอื่นที่ปลอดภัยกว่านี้)
+        $userToken = hash('sha256', auth()->user()->google_id . time());
+
         $csvUpload = new CsvUpload();
         $csvUpload->file_name = $file->getClientOriginalName();
         $csvUpload->file_path = $filePath;
+        $csvUpload->user_token = $userToken;
         $csvUpload->save();
 
         $csv = Reader::createFromPath(storage_path('app/' . $filePath), 'r');
@@ -118,6 +122,7 @@ class CsvUploadController extends Controller
         $results = [];
 
         foreach ($comments as $comment) {
+            $start_time = microtime(true); // เริ่มจับเวลา
             // ตรวจสอบคำว่า "เร็ว" หรือ "ไว"
             if (stripos($comment, 'เร็ว') !== false || stripos($comment, 'ไว') !== false) {
                 $polarity = 'negative'; // ตั้งเป็น negative ถ้ามีคำที่กำหนดอยู่ในความคิดเห็น
@@ -139,10 +144,21 @@ class CsvUploadController extends Controller
                     $polarity = 'unknown';
                 }
             }
+            $end_time = microtime(true); // จับเวลาสิ้นสุด
+            $processing_time = $end_time - $start_time; // คำนวณเวลาที่ใช้ในการประมวลผล
+
+            // บันทึกผลลัพธ์และเวลาที่ใช้ลงในฐานข้อมูล
+            AnalysisResult::create([
+                'comment' => $comment,
+                'score' => $score,
+                'polarity' => $polarity,
+                'processing_time' => $processing_time, // บันทึกเวลาที่ใช้ในการประมวลผล
+            ]);
             $results[] = [
                 'comment' => $comment,
                 'score' => $score,
                 'polarity' => $polarity,
+                'processing_time' => $processing_time,
             ];
         }
 

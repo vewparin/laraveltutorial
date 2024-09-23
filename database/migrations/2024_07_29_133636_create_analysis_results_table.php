@@ -14,6 +14,8 @@ class CreateAnalysisResultsTable extends Migration
             $table->text('comment');
             $table->float('score');
             $table->string('polarity');
+            // เพิ่มคอลัมน์สำหรับเวลาที่ใช้ในการประมวลผล
+            $table->decimal('processing_time', 8, 4)->nullable();
             $table->timestamps();
         });
     }

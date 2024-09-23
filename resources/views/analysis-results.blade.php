@@ -6,7 +6,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        
+        #filter-buttons {
+            margin-bottom: 20px;
+        }
+
         #dashboard-container {
             max-width: 1000px;
             margin: 0 auto;
@@ -107,6 +110,7 @@
                         <th>Comment</th>
                         <th>Score</th>
                         <th>Polarity</th>
+                        <th>Time spent</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,6 +119,7 @@
                         <td>{{ htmlspecialchars($result['comment']) }}</td>
                         <td>{{ htmlspecialchars($result['score']) }}</td>
                         <td>{{ htmlspecialchars($result['polarity']) }}</td>
+                        <td>{{ number_format($result['processing_time'], 4) }} seconds</td> <!-- แสดงเวลาที่ใช้ในการประมวลผล -->
                     </tr>
                     @endforeach
                 </tbody>
@@ -192,7 +197,7 @@
             csvContent += "Comment,Score,Polarity\n"; // Add header
 
             results.forEach(function(rowArray) {
-                let row = rowArray.comment + ',' + rowArray.score + ',' + rowArray.polarity;
+                let row = rowArray.comment + ',' + rowArray.score + ',' + rowArray.polarity + ',' + rowArray.processing_time;
                 csvContent += row + "\n";
             });
 
@@ -230,9 +235,10 @@
             const dashboardContainer = document.getElementById('dashboard-container');
             dashboardContainer.innerHTML = `
         <h2>Dashboard</h2>
+        <div id="filter-buttons"></div>
+
         <canvas id="chart-container" width="400" height="400"></canvas>
         <div id="polarity-info"></div>
-        <div id="filter-buttons"></div>
     `;
 
             // Render chart
@@ -267,11 +273,11 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins:{
-                        legend:{
-                            display:true,
-                            labels:{
-                                font:{
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                font: {
                                     size: 20
                                 },
                                 padding: 20
@@ -320,7 +326,10 @@
         function filterComments(polarity) {
             const rows = document.querySelectorAll('.table tbody tr');
             rows.forEach(row => {
-                if (polarity === 'all' || row.querySelector('td:last-child').textContent.trim().toLowerCase() === polarity) {
+                // อ้างอิงถึงคอลัมน์ที่สาม (index 2) ซึ่งเป็นคอลัมน์ polarity
+                const polarityCell = row.querySelectorAll('td')[2].textContent.trim().toLowerCase();
+
+                if (polarity === 'all' || polarityCell === polarity) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
