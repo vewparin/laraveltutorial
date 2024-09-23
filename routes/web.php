@@ -6,6 +6,8 @@ use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Authenticate;
+use App\Exports\ResultsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('auth/google', [LoginController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/callback', [LoginController::class, 'callbackGoogle'])->name('auth.google.callback');
@@ -46,3 +48,6 @@ Route::get('/previous-results', [CsvUploadController::class, 'showPreviousResult
 //อันใหม่
 Route::get('/dashboard-data', [DashboardController::class, 'getData'])->name('dashboard.data');
 
+Route::get('/download-excel', function () {
+    return Excel::download(new ResultsExport, 'analysis_results.xlsx');
+})->name('download.excel');

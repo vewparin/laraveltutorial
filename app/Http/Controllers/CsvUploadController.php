@@ -120,6 +120,8 @@ class CsvUploadController extends Controller
         $comments = CsvData::pluck('column2')->toArray();
 
         $results = [];
+        $totalProcessingTime = 0; // ตัวแปรสำหรับเก็บเวลาประมวลผลรวม
+        $totalComments = count($comments); // นับจำนวนความคิดเห็นทั้งหมด
 
         foreach ($comments as $comment) {
             $start_time = microtime(true); // เริ่มจับเวลา
@@ -146,6 +148,8 @@ class CsvUploadController extends Controller
             }
             $end_time = microtime(true); // จับเวลาสิ้นสุด
             $processing_time = $end_time - $start_time; // คำนวณเวลาที่ใช้ในการประมวลผล
+            // เพิ่มเวลาที่ใช้ในการประมวลผลรวม
+            $totalProcessingTime += $processing_time;
 
             // บันทึกผลลัพธ์และเวลาที่ใช้ลงในฐานข้อมูล
             AnalysisResult::create([
@@ -161,8 +165,13 @@ class CsvUploadController extends Controller
                 'processing_time' => $processing_time,
             ];
         }
+        // คำนวณค่าเฉลี่ยเวลาประมวลผลต่อแถว
+        $averageProcessingTime = $totalComments > 0 ? $totalProcessingTime / $totalComments : 0;
 
-        return redirect()->route('comments.analysis.results')->with('results', $results);
+        return redirect()->route('comments.analysis.results')
+            ->with('results', $results)
+            ->with('totalProcessingTime', $totalProcessingTime) // ส่งเวลาใช้ไปทั้งหมด
+            ->with('averageProcessingTime', $averageProcessingTime);
     }
 
 

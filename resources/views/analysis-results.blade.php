@@ -6,15 +6,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        #filter-buttons {
-            margin-bottom: 20px;
-        }
-
-        #dashboard-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            box-sizing: border-box;
+        .full-height {
+            height: 100vh;
         }
 
         #chart-container {
@@ -28,17 +21,8 @@
             margin-top: 20px;
         }
 
-        .filter-buttons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        /*======================================*/
         .table-wrapper {
             max-height: 400px;
-            /* ความสูงของแถบเลื่อน */
             overflow-y: auto;
             margin-top: 20px;
         }
@@ -74,13 +58,13 @@
 </head>
 
 <body>
-    <div class="container mt-5">
-        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column ">
+    <div class="container-fluid mt-5 ">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column border border-1">
             <header class="mb-auto">
                 <div>
                     <h3 class="float-md-start mb-0">Semantic Analyze</h3>
-                    <nav class="nav nav-masthead justify-content-center float-md-end ">
-                        <a class="nav-link text-dark " aria-current="page" href="{{ route('welcome') }}">Home</a>
+                    <nav class="nav nav-masthead justify-content-center float-md-end">
+                        <a class="nav-link text-dark" aria-current="page" href="{{ route('welcome') }}">Home</a>
                         <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">Upload</a>
                         <a class="nav-link active" href="{{ route('comments.analysis.results') }}">Result</a>
 
@@ -94,169 +78,138 @@
                 </div>
             </header>
         </div>
-        <h1 class="mb-4">Analysis Results</h1>
 
-        @if (session('results'))
-        <div class="alert alert-success">
-            Analysis completed successfully!
+        <div class="row">
+            <!-- คอลัมน์ซ้าย: ตารางแสดงคอมเมนต์ -->
+            <div class="col-md-6 full-height border-end mt-5">
+                <h1 class="mb-4">Analysis Results</h1>
+
+                @if (session('results'))
+                <div class="alert alert-success">
+                    Analysis completed successfully!
+                </div>
+                @endif
+
+                <div class="form-group mb-3">
+                    <label for="polarityFilter">Filter Comments by Polarity:</label>
+                    <select class="form-select" id="polarityFilter">
+                        <option value="all">All</option>
+                        <option value="positive">Positive</option>
+                        <option value="neutral">Neutral</option>
+                        <option value="negative">Negative</option>
+                    </select>
+                </div>
+
+                @if (is_array($results) && !empty($results))
+                <div class="table-wrapper">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Comment</th>
+                                <th>Score</th>
+                                <th>Polarity</th>
+                                <th>Time spent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($results as $result)
+                            <tr>
+                                <td>{{ htmlspecialchars($result['comment']) }}</td>
+                                <td>{{ htmlspecialchars($result['score']) }}</td>
+                                <td>{{ htmlspecialchars($result['polarity']) }}</td>
+                                <td>{{ number_format($result['processing_time'], 4) }} seconds</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @else
+                <p>No analysis results to display.</p>
+                @endif
+
+                <!-- แสดงเวลาประมวลผลรวม -->
+                <div class="mt-4 border border-1" style="font-size: large;">
+                    <strong>Total Processing Time: </strong> {{ number_format(session('totalProcessingTime'), 4) }} seconds
+                </div>
+                <!-- แสดงค่าเฉลี่ยเวลาประมวลผลต่อแถว -->
+                <div class="mt-1 border border-1" style="font-size: large;">
+                    <strong>Average Processing Time per Comment: </strong> {{ number_format(session('averageProcessingTime'), 4) }} seconds
+                </div>
+
+                <div class="d-flex p-2 justify-content-between mt-4">
+                    <div>
+                        <a href="{{ route('csv.upload.form') }}" class="btn btn-primary">Back to Upload</a>
+                    </div>
+                    <!-- <div>
+                        <button id="show-dashboard-btn" class="btn btn-primary">Show Dashboard</button>
+                    </div> -->
+                    <div id="save-container">
+                        <button id="save-button" class="btn btn-success">Save to Database</button>
+                    </div>
+                    <form id="delete-all-form" action="{{ url('delete-all-results') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Delete All Results</button>
+                    </form>
+                    <!-- <div>
+                        <button id="download-csv-button" class="btn btn-info">Download as CSV</button>
+                    </div> -->
+                    <div>
+                        <a href="{{ route('download.excel') }}" class="btn btn-success">Download as Excel</a>
+                    </div>
+                    <div>
+                        <a href="{{ route('comments.previous.results') }}" class="btn btn-secondary">Load Previous Results</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- คอลัมน์ขวา: Dashboard -->
+            <div class="col-md-6 full-height mt-5">
+                <div id="dashboard-container" style="margin-top:10">
+                    <h2>Dashboard</h2>
+                    <canvas id="chart-container" width="400" height="400"></canvas>
+                    <div id="polarity-info"></div>
+                </div>
+            </div>
+
         </div>
-        @endif
-
-        @if (is_array($results) && !empty($results))
-        <div class="table-wrapper">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Comment</th>
-                        <th>Score</th>
-                        <th>Polarity</th>
-                        <th>Time spent</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($results as $result)
-                    <tr>
-                        <td>{{ htmlspecialchars($result['comment']) }}</td>
-                        <td>{{ htmlspecialchars($result['score']) }}</td>
-                        <td>{{ htmlspecialchars($result['polarity']) }}</td>
-                        <td>{{ number_format($result['processing_time'], 4) }} seconds</td> <!-- แสดงเวลาที่ใช้ในการประมวลผล -->
-                    </tr>
-                    @endforeach
-                </tbody>
-
-            </table>
-
-        </div>
-        @else
-        <p>No analysis results to display.</p>
-        @endif
-        <div class="d-flex p-2 justify-content-between">
-
-            <div>
-                <a href="{{ route('csv.upload.form') }}" class="btn btn-primary mt-3">Back to Upload</a>
-            </div>
-            <!-- แก้ไขปุ่ม Go to Dashboard -->
-            <div>
-                <button id="show-dashboard-btn" class="btn btn-primary mt-3">Show Dashboard</button>
-            </div>
-            <div id="save-container" class="mt-3">
-                <button id="save-button" class="btn btn-success">Save to Database</button>
-            </div>
-
-            <!-- <div>
-                <a href="{{ route('dashboard') }}" class="btn btn-primary mt-3">Go to Dashboard</a>
-            </div> -->
-
-            <form id="delete-all-form" action="{{ url('delete-all-results') }}" method="POST" class="mt-3">
-                @csrf
-                <button type="submit" class="btn btn-danger">Delete All Results</button>
-            </form>
-            <div>
-                <button id="download-csv-button" class="btn btn-info mt-3">Download as CSV</button>
-            </div>
-            <div>
-                <a href="{{ route('comments.previous.results') }}" class="btn btn-secondary mt-3">Load Previous Results</a>
-            </div>
-        </div>
-    </div>
-
-    <div id="dashboard-container" style="display: none; margin-top:10">
-        <h2>Dashboard</h2>
-        <canvas id="chart-container" width="400" height="400"></canvas>
-        <div id="polarity-info"></div>
-        <div id="filter-buttons"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('save-button').addEventListener('click', function() {
-            fetch('{{ route("save.analysis.results") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    results: @json($results)
-                })
-            }).then(response => response.json()).then(data => {
-                if (data.status === 'success') {
-                    alert('Results saved successfully!');
+        // Event listener สำหรับการ filter คอมเมนต์
+        document.getElementById('polarityFilter').addEventListener('change', function() {
+            const selectedPolarity = this.value;
+            filterComments(selectedPolarity);
+        });
+
+        function filterComments(polarity) {
+            const rows = document.querySelectorAll('.table tbody tr');
+            rows.forEach(row => {
+                const polarityCell = row.querySelectorAll('td')[2].textContent.trim().toLowerCase();
+
+                if (polarity === 'all' || polarityCell === polarity) {
+                    row.style.display = '';
                 } else {
-                    alert('An error occurred while saving the results.');
+                    row.style.display = 'none';
                 }
-            }).catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while saving the results.');
             });
-        });
+        }
 
-        document.getElementById('download-csv-button').addEventListener('click', function() {
-            var results = @json($results);
-            var csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Comment,Score,Polarity\n"; // Add header
-
-            results.forEach(function(rowArray) {
-                let row = rowArray.comment + ',' + rowArray.score + ',' + rowArray.polarity + ',' + rowArray.processing_time;
-                csvContent += row + "\n";
-            });
-
-            var encodedUri = encodeURI(csvContent);
-            var link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "analysis_results.csv");
-            document.body.appendChild(link); // Required for FF
-
-            link.click();
-            document.body.removeChild(link);
-        });
-
-        //๋JS FOR DashBoard Webpage link is DashboardController.php and Web.php
-        document.getElementById('show-dashboard-btn').addEventListener('click', function() {
-            const dashboardContainer = document.getElementById('dashboard-container');
-            if (dashboardContainer.style.display === 'none' || dashboardContainer.style.display === '') {
-                fetch('{{ route("dashboard.data") }}')
-                    .then(response => response.json())
-                    .then(data => {
-                        dashboardContainer.style.display = 'block';
-                        renderDashboard(data);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching dashboard data:', error);
-                        alert('An error occurred while fetching dashboard data. Please try again.');
-                    });
-            } else {
-                dashboardContainer.style.display = 'none';
-            }
+        // Dashboard rendering
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('{{ route("dashboard.data") }}')
+                .then(response => response.json())
+                .then(data => {
+                    renderDashboard(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching dashboard data:', error);
+                    alert('An error occurred while fetching dashboard data.');
+                });
         });
 
         function renderDashboard(data) {
-            // Clear previous content
-            const dashboardContainer = document.getElementById('dashboard-container');
-            dashboardContainer.innerHTML = `
-        <h2>Dashboard</h2>
-        <div id="filter-buttons"></div>
-
-        <canvas id="chart-container" width="400" height="400"></canvas>
-        <div id="polarity-info"></div>
-    `;
-
-            // Render chart
-            renderChart(data.polarityCounts);
-
-            // Render polarity info
-            renderPolarityInfo(data.polarityCounts, data.total);
-
-            // Render filter buttons
-            renderFilterButtons();
-        }
-
-        function renderChart(polarityCounts) {
             const canvas = document.getElementById('chart-container');
-            if (!canvas) {
-                console.error('Canvas element not found');
-                return;
-            }
             const ctx = canvas.getContext('2d');
             if (window.myChart) {
                 window.myChart.destroy();
@@ -266,7 +219,7 @@
                 data: {
                     labels: ['Positive', 'Neutral', 'Negative'],
                     datasets: [{
-                        data: [polarityCounts.positive, polarityCounts.neutral, polarityCounts.negative],
+                        data: [data.polarityCounts.positive, data.polarityCounts.neutral, data.polarityCounts.negative],
                         backgroundColor: ['#28a745', '#ffc107', '#dc3545']
                     }]
                 },
@@ -286,55 +239,31 @@
                     }
                 }
             });
+
+            renderPolarityInfo(data.polarityCounts, data.total);
         }
 
         function renderPolarityInfo(polarityCounts, total) {
             const infoContainer = document.getElementById('polarity-info');
             infoContainer.innerHTML = `
-        <div class="polarity-info">
-            <div>
-                <h4>Positive</h4>
-                <p>Count: ${polarityCounts.positive}</p>
-                <p>Percentage: ${((polarityCounts.positive / total) * 100).toFixed(2)}%</p>
+            <div class="polarity-info">
+                <div>
+                    <h4>Positive</h4>
+                    <p>Count: ${polarityCounts.positive}</p>
+                    <p>Percentage: ${(polarityCounts.positive / total * 100).toFixed(2)}%</p>
+                </div>
+                <div>
+                    <h4>Neutral</h4>
+                    <p>Count: ${polarityCounts.neutral}</p>
+                    <p>Percentage: ${(polarityCounts.neutral / total * 100).toFixed(2)}%</p>
+                </div>
+                <div>
+                    <h4>Negative</h4>
+                    <p>Count: ${polarityCounts.negative}</p>
+                    <p>Percentage: ${(polarityCounts.negative / total * 100).toFixed(2)}%</p>
+                </div>
             </div>
-            <div>
-                <h4>Neutral</h4>
-                <p>Count: ${polarityCounts.neutral}</p>
-                <p>Percentage: ${((polarityCounts.neutral / total) * 100).toFixed(2)}%</p>
-            </div>
-            <div>
-                <h4>Negative</h4>
-                <p>Count: ${polarityCounts.negative}</p>
-                <p>Percentage: ${((polarityCounts.negative / total) * 100).toFixed(2)}%</p>
-            </div>
-        </div>
-    `;
-        }
-
-        function renderFilterButtons() {
-            const buttonContainer = document.getElementById('filter-buttons');
-            buttonContainer.innerHTML = `
-        <div class="filter-buttons">
-            <button class="btn btn-success" onclick="filterComments('positive')">Positive Comments</button>
-            <button class="btn btn-warning" onclick="filterComments('neutral')">Neutral Comments</button>
-            <button class="btn btn-danger" onclick="filterComments('negative')">Negative Comments</button>
-            <button class="btn btn-secondary" onclick="filterComments('all')">All Comments</button>
-        </div>
-    `;
-        }
-
-        function filterComments(polarity) {
-            const rows = document.querySelectorAll('.table tbody tr');
-            rows.forEach(row => {
-                // อ้างอิงถึงคอลัมน์ที่สาม (index 2) ซึ่งเป็นคอลัมน์ polarity
-                const polarityCell = row.querySelectorAll('td')[2].textContent.trim().toLowerCase();
-
-                if (polarity === 'all' || polarityCell === polarity) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+        `;
         }
     </script>
 </body>
