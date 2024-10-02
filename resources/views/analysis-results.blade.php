@@ -65,8 +65,10 @@
                     <h3 class="float-md-start mb-0">Semantic Analyze</h3>
                     <nav class="nav nav-masthead justify-content-center float-md-end">
                         <a class="nav-link text-dark" aria-current="page" href="{{ route('welcome') }}">Home</a>
-                        <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">Upload</a>
-                        <a class="nav-link active" href="{{ route('comments.analysis.results') }}">Result</a>
+                        <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
+                        <a class="nav-link text-dark" href="{{ route('input.text.form') }}" class="btn btn-secondary mt-3">ประมวลผลการวิเคราะห์ทีละข้อความ</a>
+
+                        <a class="nav-link active" href="{{ route('comments.analysis.results') }}">ผลลัพธ์การประมวลผล</a>
 
                         @guest
                         <a href="{{ route('google-auth') }}" class="btn btn-primary">Login with Google</a>
@@ -80,9 +82,9 @@
         </div>
 
         <div class="row">
-            <!-- คอลัมน์ซ้าย: ตารางแสดงคอมเมนต์ -->
+            <!-- Left Column: Comments Table -->
             <div class="col-md-6 full-height border-end mt-5">
-                <h1 class="mb-4">Analysis Results</h1>
+                <h1 class="mb-4">ผลลัพธ์การประมวลผล</h1>
 
                 @if (session('results'))
                 <div class="alert alert-success">
@@ -127,42 +129,38 @@
                 <p>No analysis results to display.</p>
                 @endif
 
-                <!-- แสดงเวลาประมวลผลรวม -->
+                <!-- Display Total Processing Time -->
                 <div class="mt-4 border border-1" style="font-size: large;">
                     <strong>Total Processing Time: </strong> {{ number_format(session('totalProcessingTime'), 4) }} seconds
                 </div>
-                <!-- แสดงค่าเฉลี่ยเวลาประมวลผลต่อแถว -->
+                <!-- Display Average Processing Time per Comment -->
                 <div class="mt-1 border border-1" style="font-size: large;">
                     <strong>Average Processing Time per Comment: </strong> {{ number_format(session('averageProcessingTime'), 4) }} seconds
                 </div>
 
-                <div class="d-flex p-2 justify-content-between mt-4">
-                    <div>
-                        <a href="{{ route('csv.upload.form') }}" class="btn btn-primary">Back to Upload</a>
-                    </div>
-                    <!-- <div>
-                        <button id="show-dashboard-btn" class="btn btn-primary">Show Dashboard</button>
-                    </div> -->
-                    <div id="save-container">
-                        <button id="save-button" class="btn btn-success">Save to Database</button>
-                    </div>
-                    <form id="delete-all-form" action="{{ url('delete-all-results') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-danger">Delete All Results</button>
-                    </form>
-                    <!-- <div>
-                        <button id="download-csv-button" class="btn btn-info">Download as CSV</button>
-                    </div> -->
-                    <div>
-                        <a href="{{ route('download.excel') }}" class="btn btn-success">Download as Excel</a>
-                    </div>
-                    <div>
-                        <a href="{{ route('comments.previous.results') }}" class="btn btn-secondary">Load Previous Results</a>
-                    </div>
+                <!-- Actions Dropdown -->
+                <div class="dropdown mt-4">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Actions
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a href="{{ route('csv.upload.form') }}" class="dropdown-item">Back to Upload</a></li>
+                        <li>
+                            <button id="save-button" class="dropdown-item">Save to Database</button>
+                        </li>
+                        <li>
+                            <form id="delete-all-form" action="{{ url('delete-all-results') }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="dropdown-item">Delete All Results</button>
+                            </form>
+                        </li>
+                        <li><a href="{{ route('download.excel') }}" class="dropdown-item">Download as Excel</a></li>
+                        <li><a href="{{ route('comments.previous.results') }}" class="dropdown-item">Load Previous Results</a></li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- คอลัมน์ขวา: Dashboard -->
+            <!-- Right Column: Dashboard -->
             <div class="col-md-6 full-height mt-5">
                 <div id="dashboard-container" style="margin-top:10">
                     <h2>Dashboard</h2>
@@ -170,13 +168,12 @@
                     <div id="polarity-info"></div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Event listener สำหรับการ filter คอมเมนต์
+        // Event listener for comment filtering
         document.getElementById('polarityFilter').addEventListener('change', function() {
             const selectedPolarity = this.value;
             filterComments(selectedPolarity);

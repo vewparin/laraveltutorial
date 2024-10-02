@@ -8,7 +8,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Authenticate;
 use App\Exports\ResultsExport;
 use Maatwebsite\Excel\Facades\Excel;
-
+use App\Http\Controllers\TextAnalysisController;
+use App\Http\Controllers\TextDashboardController;
 Route::get('auth/google', [LoginController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/callback', [LoginController::class, 'callbackGoogle'])->name('auth.google.callback');
 
@@ -51,3 +52,14 @@ Route::get('/dashboard-data', [DashboardController::class, 'getData'])->name('da
 Route::get('/download-excel', function () {
     return Excel::download(new ResultsExport, 'analysis_results.xlsx');
 })->name('download.excel');
+
+
+
+Route::get('/input-text', [TextAnalysisController::class, 'showInputForm'])->name('input.text.form');
+Route::post('/process-text', [TextAnalysisController::class, 'processText'])->name('process.text');
+// Route สำหรับลบข้อมูลทั้งหมด
+Route::post('/delete-all-results', [TextAnalysisController::class, 'deleteAll'])->name('delete.all.results');
+// Route สำหรับลบข้อมูลทีละแถว
+Route::delete('/delete-result/{id}', [TextAnalysisController::class, 'delete'])->name('delete.result');
+
+Route::get('/text-dashboard-data', [TextAnalysisController::class, 'showInputTextForm'])->name('text.to.dashboard.data');

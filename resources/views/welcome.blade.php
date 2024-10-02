@@ -8,7 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        
         .cover-container {
             max-width: 100em;
         }
@@ -30,7 +29,7 @@
         }
 
         .nav-masthead .active {
-            color:black;
+            color: black;
             border-bottom-color: darkblue;
         }
 
@@ -53,7 +52,9 @@
                 <h3 class="float-md-start mb-0">Semantic Analyze</h3>
                 <nav class="nav nav-masthead justify-content-center float-md-end ">
                     <a class="nav-link active" aria-current="page" href="{{ route('welcome') }}">Home</a>
-                    <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">Upload</a>
+                    <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
+                    <a class="nav-link text-dark" href="{{ route('input.text.form') }}">ประมวลผลการวิเคราะห์ทีละข้อความ</a>
+
                     @guest
                     <a href="{{ route('google-auth') }}" class="btn btn-primary">Login with Google</a>
                     @else
