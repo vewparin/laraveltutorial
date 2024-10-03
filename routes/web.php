@@ -10,6 +10,7 @@ use App\Exports\ResultsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\TextAnalysisController;
 use App\Http\Controllers\TextDashboardController;
+
 Route::get('auth/google', [LoginController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/callback', [LoginController::class, 'callbackGoogle'])->name('auth.google.callback');
 
@@ -35,13 +36,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/analyze-comments', [CsvUploadController::class, 'analyzeComments'])->name('comments.analyze');
     Route::get('/analysis-results', [CsvUploadController::class, 'showAnalysisResults'])->name('comments.analysis.results');
     Route::post('/delete-all-results', [CsvUploadController::class, 'deleteAllResults'])->name('result.delete.all');
+    Route::get('/input-text', [TextAnalysisController::class, 'showInputForm'])->name('input.text.form');
+    Route::post('/process-text', [TextAnalysisController::class, 'processText'])->name('process.text');
+
+    // Route สำหรับลบข้อมูลทั้งหมด
+    Route::post('/input-text-delete-all-results', [TextAnalysisController::class, 'deleteAll'])->name('input.text.delete.all.results');
+    // Route สำหรับลบข้อมูลทีละแถว
+    Route::delete('/delete-result/{id}', [TextAnalysisController::class, 'delete'])->name('delete.result');
+
+    Route::get('/text-dashboard-data', [TextAnalysisController::class, 'showInputTextForm'])->name('text.to.dashboard.data');
 });
 
 Route::post('/save-analysis-results', [AnalysisController::class, 'saveResults'])->name('save.analysis.results');
 //อันเก่า
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// web.php
 Route::post('/download-csv', [AnalysisController::class, 'downloadCSV'])->name('download.csv');
 
 Route::get('/previous-results', [CsvUploadController::class, 'showPreviousResults'])->name('comments.previous.results');
@@ -52,14 +61,3 @@ Route::get('/dashboard-data', [DashboardController::class, 'getData'])->name('da
 Route::get('/download-excel', function () {
     return Excel::download(new ResultsExport, 'analysis_results.xlsx');
 })->name('download.excel');
-
-
-
-Route::get('/input-text', [TextAnalysisController::class, 'showInputForm'])->name('input.text.form');
-Route::post('/process-text', [TextAnalysisController::class, 'processText'])->name('process.text');
-// Route สำหรับลบข้อมูลทั้งหมด
-Route::post('/delete-all-results', [TextAnalysisController::class, 'deleteAll'])->name('delete.all.results');
-// Route สำหรับลบข้อมูลทีละแถว
-Route::delete('/delete-result/{id}', [TextAnalysisController::class, 'delete'])->name('delete.result');
-
-Route::get('/text-dashboard-data', [TextAnalysisController::class, 'showInputTextForm'])->name('text.to.dashboard.data');

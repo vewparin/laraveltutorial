@@ -132,7 +132,7 @@
         @endif
 
         <!-- Delete All Button -->
-        <form action="{{ route('delete.all.results') }}" method="POST" class="mt-4">
+        <form action="{{ route('input.text.delete.all.results') }}" method="POST" class="mt-4">
             @csrf
             <button type="submit" class="btn btn-danger">Delete All</button>
         </form>
