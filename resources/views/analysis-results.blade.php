@@ -65,8 +65,8 @@
                     <h3 class="float-md-start mb-0">Semantic Analyze</h3>
                     <nav class="nav nav-masthead justify-content-center float-md-end">
                         <a class="nav-link text-dark" aria-current="page" href="{{ route('welcome') }}">Home</a>
-                        <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
                         <a class="nav-link text-dark" href="{{ route('input.text.form') }}" class="btn btn-secondary mt-3">ประมวลผลการวิเคราะห์ทีละข้อความ</a>
+                        <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
 
                         <a class="nav-link active" href="{{ route('comments.analysis.results') }}">ผลลัพธ์การประมวลผล</a>
 

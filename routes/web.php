@@ -7,9 +7,18 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Authenticate;
 use App\Exports\ResultsExport;
+use App\Http\Controllers\ApiSettingsController;
+use App\Http\Controllers\ModelSettingsController;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\TextAnalysisController;
 use App\Http\Controllers\TextDashboardController;
+use App\Http\Controllers\UserController;
+
+Route::get('/admin/users', [UserController::class, 'showUsers'])->name('admin.users')->middleware('auth');
+Route::post('/admin/users/delete/{id}', [UserController::class, 'deleteUser'])->name('admin.users.delete')->middleware('auth');
+Route::post('/admin/users/update/{id}', [UserController::class, 'updateUser'])->name('admin.users.update')->middleware('auth');
+Route::put('/admin/users/update/{id}', [UserController::class, 'updateUser'])->name('admin.users.update');
+Route::delete('/admin/users/delete/{id}', [UserController::class, 'deleteUser'])->name('admin.users.delete');
 
 Route::get('auth/google', [LoginController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/callback', [LoginController::class, 'callbackGoogle'])->name('auth.google.callback');
@@ -61,3 +70,7 @@ Route::get('/dashboard-data', [DashboardController::class, 'getData'])->name('da
 Route::get('/download-excel', function () {
     return Excel::download(new ResultsExport, 'analysis_results.xlsx');
 })->name('download.excel');
+
+
+Route::get('/admin/api-settings', [ApiSettingsController::class, 'showSettings'])->name('api.settings')->middleware('auth');
+Route::post('/admin/api-settings/update', [ApiSettingsController::class, 'updateSettings'])->name('api.settings.update')->middleware('auth');

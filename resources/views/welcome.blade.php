@@ -45,15 +45,18 @@
         /* Inline hover effect for the specific links */
         .nav-link.text-dark:hover {
             color: black !important;
-            background-color:antiquewhite !important; /* Change background color on hover */
-            border-radius: 5px; /* Add border-radius if needed */
-            padding: 5px; /* Add some padding for better visual effect */
+            background-color: antiquewhite !important;
+            /* Change background color on hover */
+            border-radius: 5px;
+            /* Add border-radius if needed */
+            padding: 5px;
+            /* Add some padding for better visual effect */
         }
     </style>
 </head>
 
 <body class="d-flex h-100 text-center text-dark bg-white">
-    <div class="cover-container w-100 p-3 mx-auto flex-column">
+    <div class="cover-container w-100 p-3 mx-auto flex-column border border-2">
         <header class="mb-auto">
             <div class="d-flex justify-content-between align-items-center">
                 <!-- Align to the left -->
@@ -61,8 +64,8 @@
                 <!-- Navigation links -->
                 <nav class="nav nav-masthead">
                     <a class="nav-link active" aria-current="page" href="{{ route('welcome') }}">Home</a>
-                    <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
                     <a class="nav-link text-dark" href="{{ route('input.text.form') }}">ประมวลผลการวิเคราะห์ทีละข้อความ</a>
+                    <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
 
                     @guest
                     <a href="{{ route('google-auth') }}" class="btn btn-primary ms-3">Login with Google</a>

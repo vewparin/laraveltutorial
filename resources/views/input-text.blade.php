@@ -59,8 +59,8 @@
                 <h3 class="mb-0">Semantic Analyze</h3>
                 <nav class="nav nav-masthead">
                     <a class="nav-link" aria-current="page" href="{{ route('welcome') }}">Home</a>
-                    <a class="nav-link" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
                     <a class="nav-link active" href="{{ route('input.text.form') }}">ประมวลผลการวิเคราะห์ทีละข้อความ</a>
+                    <a class="nav-link" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
                     <a class="nav-link" href="{{ route('comments.analysis.results') }}">ผลลัพธ์การประมวลผล</a>
 
                     @guest
@@ -74,7 +74,7 @@
         </header>
     </div>
 
-    <div class="container mt-5">
+    <div class="container mt-5 border border-1">
         <!-- Success Message -->
         @if (session('success'))
         <div class="alert alert-success">
@@ -87,7 +87,7 @@
         <form action="{{ route('process.text') }}" method="POST">
             @csrf
             <div class="mb-3">
-                <label for="text" class="form-label">Enter your text:</label>
+                <label for="text" class="form-label pt-3">ข้อเสนอแนะเกี่ยวกับการเรียนการสอน: </label>
                 <input type="text" class="form-control" id="text" name="text" placeholder="Type your text here..." required>
             </div>
             <button type="submit" class="btn btn-primary">ประมวลผล</button>
@@ -96,15 +96,15 @@
         <!-- Display Results Table -->
         @if ($results->isNotEmpty())
         <div class="mt-4">
-            <h3>Analysis Results:</h3>
+            <h3>ผลลัพธ์การวิเคราะห์</h3>
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Comment</th>
-                        <th>Score</th>
-                        <th>Polarity</th>
-                        <th>Processing Time</th>
+                        <th>ข้อความ</th>
+                        <th>คะแนน</th>
+                        <th>ผลลัพธ์</th>
+                        <th>เวลาที่ใช้ในการประมวลผล</th>
                         <th>Action</th> <!-- Delete button column -->
                     </tr>
                 </thead>
@@ -143,7 +143,7 @@
         </div>
 
         <!-- Polarity Info Container -->
-        <div id="polarity-info" class="polarity-info"></div>
+        <div id="polarity-info" class="polarity-info mb-5"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

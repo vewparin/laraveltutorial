@@ -8,8 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-
-
         .container {
             max-width: 75%;
             padding: 30px;
@@ -62,14 +60,14 @@
 </head>
 
 <body class="h-100 bg-light">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column mb-4">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column mb-4 border border-1">
         <header class="mb-auto">
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">Semantic Analyze</h3>
                 <nav class="nav nav-masthead">
                     <a class="nav-link" aria-current="page" href="{{ route('welcome') }}">Home</a>
-                    <a class="nav-link" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
                     <a class="nav-link active" href="{{ route('input.text.form') }}">ประมวลผลการวิเคราะห์ทีละข้อความ</a>
+                    <a class="nav-link" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
                     <a class="nav-link" href="{{ route('comments.analysis.results') }}">ผลลัพธ์การประมวลผล</a>
 
                     <!-- @guest
@@ -82,7 +80,7 @@
             </div>
         </header>
     </div>
-    <div class="container mt-5 text-center">
+    <div class="container mt-5 text-center border border-1">
         <h1>โปรดเข้าสู่ระบบก่อนเข้าใช้งานระบบ</h1>
         <a href="{{ route('google-auth') }}" class="btn btn-danger w-100">Login with Google</a>
     </div>
