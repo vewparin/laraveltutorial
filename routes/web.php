@@ -23,6 +23,9 @@ Route::delete('/admin/users/delete/{id}', [UserController::class, 'deleteUser'])
 Route::get('auth/google', [LoginController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/callback', [LoginController::class, 'callbackGoogle'])->name('auth.google.callback');
 
+Route::get('/error', function () {
+    return view('error');
+})->name('error.page');
 
 Route::get('/login', function () {
     return view('login');

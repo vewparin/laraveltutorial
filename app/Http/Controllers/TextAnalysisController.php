@@ -64,6 +64,14 @@ class TextAnalysisController extends Controller
         ]);
 
         $comment = $request->input('text');
+
+        // ตรวจสอบว่ามีอักขระพิเศษหรือไม่ (เช่น ตัวอักษรที่ไม่ใช่ภาษาไทย, อังกฤษ, หรือช่องว่าง)
+        if (preg_match('/[^\p{Thai}\p{Latin}\p{N}\s]/u', $comment)) {
+            return redirect()->route('input.text.form')
+                ->with('error', 'โปรดกรอกข้อความเท่านั้น ห้ามใช้อักขระพิเศษ');
+        }
+
+
         $apiKey = $request->get('api_key', env('AIFORTHAI_API_KEY'));
 
         $start_time = microtime(true); // เริ่มจับเวลา

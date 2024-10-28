@@ -18,7 +18,8 @@
 
         h1 {
             margin-bottom: 30px;
-            font-size: 2.5rem;
+            font-size: 3rem;
+            /* ปรับขนาดฟอนต์ให้ใหญ่ขึ้น */
             font-weight: bold;
             color: #f8f9fa;
         }
@@ -41,6 +42,8 @@
             color: black;
             background-color: transparent;
             border-bottom: .25rem solid transparent;
+            font-size: 1.2rem;
+            /* เพิ่มขนาดฟอนต์ของลิงก์ */
         }
 
         .nav-masthead .nav-link:hover,
@@ -56,6 +59,114 @@
         .nav-link:hover {
             background-color: burlywood;
         }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin: auto;
+        }
+
+        .login-container h1 {
+            font-size: 2.25rem;
+            /* เพิ่มขนาดฟอนต์ของหัวข้อ */
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .form-control {
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            height: 45px;
+            font-size: 1.1rem;
+            /* เพิ่มขนาดฟอนต์ใน input */
+        }
+
+        .btn-continue {
+            background-color: #28a745;
+            color: #fff;
+            font-size: 1.2rem;
+            /* เพิ่มขนาดฟอนต์ในปุ่ม Continue */
+            padding: 0.75rem;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-continue:hover {
+            background-color: #218838;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+            /* เพิ่มขนาดฟอนต์ของ divider */
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider:not(:empty)::before {
+            margin-right: .5em;
+        }
+
+        .divider:not(:empty)::after {
+            margin-left: .5em;
+        }
+
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color:#c9302c;
+            color:#fff;
+            font-size: 1.2rem;
+            /* เพิ่มขนาดฟอนต์ในปุ่ม Google */
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-google svg {
+            width: 24px;
+            /* ปรับขนาดโลโก้ให้ใหญ่ขึ้น */
+            margin-right: 0.5rem;
+        }
+
+        .btn-google:hover {
+            background-color: #f7f7f7;
+        }
+
+        .sign-up-link {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            /* เพิ่มขนาดฟอนต์ในลิงก์สมัคร */
+        }
+
+        .sign-up-link a {
+            color: #28a745;
+            text-decoration: none;
+        }
+
+        .sign-up-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -69,20 +180,23 @@
                     <a class="nav-link active" href="{{ route('input.text.form') }}">ประมวลผลการวิเคราะห์ทีละข้อความ</a>
                     <a class="nav-link" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
                     <a class="nav-link" href="{{ route('comments.analysis.results') }}">ผลลัพธ์การประมวลผล</a>
-
-                    <!-- @guest
-                    <a href="{{ route('google-auth') }}" class="btn btn-primary ms-3">Login with Google</a>
-                    @else
-                    <span class="nav-link text-primary bg-white rounded-pill">Your name: {{ Auth::user()->name }}</span>
-                    <a class="nav-link bg-danger text-white rounded-pill ms-3" href="{{ route('logout') }}">Logout</a>
-                    @endguest -->
                 </nav>
             </div>
         </header>
     </div>
-    <div class="container mt-5 text-center border border-1">
-        <h1>โปรดเข้าสู่ระบบก่อนเข้าใช้งานระบบ</h1>
-        <a href="{{ route('google-auth') }}" class="btn btn-danger w-100">Login with Google</a>
+
+    <div class="login-container">
+        <h1>เข้าสู่ระบบ</h1>
+        <input type="email" class="form-control" placeholder="Email address*" required>
+        <button class="btn btn-continue">Continue</button>
+        <div class="sign-up-link">
+            Don't have an account? <a href="#">Sign Up</a>
+        </div>
+        <div class="divider">OR</div>
+        <a href="{{ route('google-auth') }}" class="btn-google">
+
+            Continue with Google
+        </a>
     </div>
 </body>
 

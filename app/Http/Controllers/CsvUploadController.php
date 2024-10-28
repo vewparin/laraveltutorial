@@ -20,9 +20,13 @@ class CsvUploadController extends Controller
         $csvData = CsvData::all();
         return view('upload', compact('uploads', 'csvData'));
     }
-
     public function uploadFile(Request $request)
     {
+        // ตรวจสอบว่าไฟล์เป็น csv หรือไม่
+        if (!$request->hasFile('csv_file') || $request->file('csv_file')->getClientOriginalExtension() !== 'csv') {
+            return back()->with('error', 'ไม่สามารถอัพโหลดไฟล์ได้ เนื่องจากไฟล์ของคุณไม่ใช่ไฟล์รูปแบบ CSV');
+        }
+
         $request->validate([
             'csv_file' => 'required|file|mimes:csv,txt|max:2048',
         ]);
@@ -54,6 +58,40 @@ class CsvUploadController extends Controller
 
         return back()->with('success', 'File uploaded and data imported successfully')->with('file', $filePath);
     }
+
+    // public function uploadFile(Request $request)
+    // {
+    //     $request->validate([
+    //         'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+    //     ]);
+
+    //     $file = $request->file('csv_file');
+    //     $filePath = $file->store('uploads');
+
+    //     // สร้าง user_token (ตัวอย่างเท่านั้น คุณอาจใช้วิธีอื่นที่ปลอดภัยกว่านี้)
+    //     $userToken = hash('sha256', auth()->user()->google_id . time());
+
+    //     $csvUpload = new CsvUpload();
+    //     $csvUpload->file_name = $file->getClientOriginalName();
+    //     $csvUpload->file_path = $filePath;
+    //     $csvUpload->user_token = $userToken;
+    //     $csvUpload->save();
+
+    //     $csv = Reader::createFromPath(storage_path('app/' . $filePath), 'r');
+
+    //     $header = ['column1', 'column2', 'column3'];
+    //     $records = $csv->getRecords($header);
+
+    //     foreach ($records as $record) {
+    //         CsvData::create([
+    //             'column1' => $record['column1'],
+    //             'column2' => $record['column2'],
+    //             'column3' => $record['column3'],
+    //         ]);
+    //     }
+
+    //     return back()->with('success', 'File uploaded and data imported successfully')->with('file', $filePath);
+    // }
 
     public function deleteFile($id)
     {

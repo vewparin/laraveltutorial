@@ -74,7 +74,11 @@
                     {{ session('success') }}
                 </div>
                 @endif
-
+                @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+                @endif
                 <form action="{{ route('csv.upload') }}" method="POST" enctype="multipart/form-data" class="mt-3">
                     @csrf
                     <div class="mb-3">
@@ -83,6 +87,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Upload</button>
                 </form>
+
 
                 <form action="{{ route('csv.delete.all') }}" method="POST" class="mt-3">
                     @csrf

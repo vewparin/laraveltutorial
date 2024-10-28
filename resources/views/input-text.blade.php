@@ -82,7 +82,11 @@
         </div>
         @endif
         <h1>ป้อนข้อมูลสำหรับการประมวลทีละข้อความ</h1>
-
+        @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        @endif
         <!-- Input Form for Text Analysis -->
         <form action="{{ route('process.text') }}" method="POST">
             @csrf

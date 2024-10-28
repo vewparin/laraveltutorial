@@ -68,7 +68,7 @@
                     <a class="nav-link text-dark" href="{{ route('csv.upload.form') }}">อัพโหลดไฟล์ CSV</a>
 
                     @guest
-                    <a href="{{ route('google-auth') }}" class="btn btn-primary ms-3">Login with Google</a>
+                    <a href="{{ route('google-auth') }}" class="btn btn-primary ms-3">เข้าสู่ระบบ</a>
                     @else
                     <span class="nav-link text-primary bg-white rounded-pill"> your name : {{ Auth::user()->name }}</span>
                     <a class="nav-link bg-danger text-white rounded-pill ms-3" href="{{ route('logout') }}">Logout</a>
@@ -78,7 +78,7 @@
         </header>
 
         <main class="px-3">
-            <h1>Welcome to Semantic Analyze</h1>
+            <h1>ยินดีต้อนรับสู่ระบบวิเคราะห์ความคิดเห็นต่อการจัดการเรียนการสอน ด้วยการวิเคราะห์อารมณ์</h1>
             <p class="lead">
                 <a href="{{ route('csv.upload.form') }}" class="btn btn-lg btn-secondary fw-bold border-white bg-black">Get Started</a>
             </p>
